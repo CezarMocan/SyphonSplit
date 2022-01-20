@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 
 void ofApp::setup() {
+    ofSetDataPathRoot("../Resources/data");
     isShowGui = true;
     
     setMonitorByIndex(appIndex);

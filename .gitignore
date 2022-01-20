@@ -2,6 +2,8 @@
 # openFrameworks patterns
 #########################
 
+*.zip
+
 # build files
 openFrameworks.a
 openFrameworksDebug.a
