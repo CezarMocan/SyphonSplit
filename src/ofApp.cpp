@@ -8,7 +8,9 @@ void ofApp::setup() {
     
     setMonitorByIndex(appIndex);
     
-    ofSetWindowTitle("ofxSyphonServerDirectoryExample");
+    stringstream ss;
+    ss << "SyphonReceiver-" << appIndex;
+    ofSetWindowTitle(ss.str());
     ofSetFrameRate(60);
     
     syphonClient.setup();
@@ -48,10 +50,11 @@ void ofApp::resetGui() {
     monitorsDropdown = gui->addDropdown("Current Monitor", monitorDescriptions);
     monitorsDropdown->onDropdownEvent(this, &ofApp::onMonitorsDropdownEvent);
     
-    fullScreenToggle = gui->addToggle("Full screen");
-    fullScreenToggle->setChecked(true);
-    fullScreenToggle->onToggleEvent(this, &ofApp::onFullScreenToggleEvent);
+//    fullScreenToggle = gui->addToggle("Full screen");
+//    fullScreenToggle->setChecked(true);
+//    fullScreenToggle->onToggleEvent(this, &ofApp::onFullScreenToggleEvent);
     
+    gui->addLabel("Press 'f' to toggle fullscreen.");
     gui->addLabel("Press 'h' to hide/show this GUI.");
 }
 
@@ -154,6 +157,8 @@ void ofApp::keyReleased(int key){
         
         if (!isShowGui) ofHideCursor();
         else ofShowCursor();
+    } else if (key == 'f') {
+        WindowManager::window[appIndex]->toggleFullscreen();
     }
 }
 
