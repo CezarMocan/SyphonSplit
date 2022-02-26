@@ -46,11 +46,19 @@ int main( ){
      */
     
     cout << "Monitor count: " << WindowManager::monitorCount << endl;
-    
-    // Running two different instances of the app, for the two windows
-    for (int i = 0; i < 2; i++) {
-        shared_ptr<ofApp> mainApp(new ofApp(i));
-        ofRunApp(WindowManager::window[i], mainApp);
+    if (WindowManager::monitorCount >= 3) {
+        shared_ptr<ofApp> mainApp(new ofApp(0));
+        ofRunApp(WindowManager::window[1], mainApp);
+        
+        shared_ptr<ofApp> mainApp2(new ofApp(1));
+        ofRunApp(WindowManager::window[2], mainApp2);
+    } else {
+        // Running two different instances of the app, for the two windows
+        for (int i = 0; i < 2; i++) {
+            shared_ptr<ofApp> mainApp(new ofApp(i));
+            ofRunApp(WindowManager::window[i], mainApp);
+        }
     }
+    
     ofRunMainLoop();
 }

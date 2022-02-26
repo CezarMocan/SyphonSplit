@@ -22,6 +22,11 @@ void ofApp::setup() {
 
     dirIdx = -1;
     
+    if (dir.size() >= 2) {
+        dirIdx = std::min(appIndex, dir.size() - 1);
+        syphonClient.set(dir.getDescription(dirIdx));
+    }
+    
     gui = new ofxDatGui( 100, 100 );
     resetGui();
 }
@@ -111,11 +116,11 @@ void ofApp::setSyphonServerByIndex(int idx) {
         if(appName == ""){
             appName = "null";
         }
-        ofSetWindowTitle(serverName + ":" + appName);
+//        ofSetWindowTitle(serverName + ":" + appName);
     }
     else
     {
-        ofSetWindowTitle("No Server");
+//        ofSetWindowTitle("No Server");
     }
 
 }
