@@ -6,7 +6,8 @@ void ofApp::setup() {
     ofSetDataPathRoot("../Resources/data");
     isShowGui = true;
     
-    setMonitorByIndex(appIndex);
+    int monitorOffset = std::max(WindowManager::monitorCount - 2, 0);
+    setMonitorByIndex(appIndex + monitorOffset);
     
     stringstream ss;
     ss << "SyphonReceiver-" << appIndex;
