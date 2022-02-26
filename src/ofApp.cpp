@@ -3,8 +3,8 @@
 //--------------------------------------------------------------
 
 void ofApp::setup() {
-    ofSetDataPathRoot("../Resources/data");
-    isShowGui = true;
+//    ofSetDataPathRoot("../Resources/data");
+    isShowGui = false;
     
     int monitorOffset = std::max(WindowManager::monitorCount - 2, 0);
     setMonitorByIndex(appIndex + monitorOffset);
@@ -29,6 +29,8 @@ void ofApp::setup() {
     }
     
     gui = new ofxDatGui( 100, 100 );
+    gui->setVisible(isShowGui);
+    gui->setEnabled(isShowGui);
     resetGui();
 }
 
