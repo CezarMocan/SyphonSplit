@@ -1,10 +1,11 @@
 #include "ofApp.h"
+#include <algorithm>
 
 //--------------------------------------------------------------
 
 void ofApp::setup() {
     ofSetDataPathRoot("../Resources/data");
-    isShowGui = true;
+    isShowGui = false;
     
     int monitorOffset = std::max(WindowManager::monitorCount - 2, 0);
     setMonitorByIndex(appIndex + monitorOffset);
@@ -25,19 +26,28 @@ void ofApp::setup() {
     
     if (dir.size() >= 2) {
         dirIdx = std::min(appIndex, dir.size() - 1);
-        syphonClient.set(dir.getDescription(dirIdx));
+        vector<ofxSyphonServerDescription> sortedServers = getSortedServers(dir.getServerList());
+        for (int i = 0; i < sortedServers.size(); i++) {
+            ofLogNotice() << sortedServers[i].serverName << endl;
+        }
+        ofLogNotice() << dirIdx << endl << endl;
+        syphonClient.set(sortedServers[dirIdx]);
     }
     
     gui = new ofxDatGui( 100, 100 );
     resetGui();
+    
+    gui->setVisible(isShowGui);
+    gui->setEnabled(isShowGui);
 }
 
 void ofApp::resetGui() {
     gui->clearGui();
     
     syphonServers.clear();
-    for (int i = 0; i < dir.size(); i++) {
-        syphonServers.push_back(dir.getDescription(i).serverName);
+    vector<ofxSyphonServerDescription> sortedServers = getSortedServers(dir.getServerList());
+    for (int i = 0; i < sortedServers.size(); i++) {
+        syphonServers.push_back(sortedServers[i].serverName);
     }
     
     gui->addLabel("Select Syphon video stream to display in this window:");
@@ -81,9 +91,12 @@ void ofApp::serverAnnounced(ofxSyphonServerDirectoryEventArgs &arg) {
         ofLogNotice("ofxSyphonServerDirectory Server Announced")<<" Server Name: "<<dir.serverName <<" | App Name: "<<dir.appName;
     }
         
-    
     dirIdx = std::min(appIndex, dir.size() - 1);
-    syphonClient.set(dir.getDescription(dirIdx));
+    vector<ofxSyphonServerDescription> sortedServers = getSortedServers(dir.getServerList());
+    syphonClient.set(sortedServers[dirIdx]);
+//
+//    dirIdx = std::min(appIndex, dir.size() - 1);
+//    syphonClient.set(dir.getDescription(dirIdx));
     
     resetGui();
 }
@@ -94,8 +107,14 @@ void ofApp::serverRetired(ofxSyphonServerDirectoryEventArgs &arg) {
     }
     
     dirIdx = std::min(appIndex, dir.size() - 1);
-    if (dirIdx >= 0)
-        syphonClient.set(dir.getDescription(dirIdx));
+    if (dirIdx >= 0) {
+        vector<ofxSyphonServerDescription> sortedServers = getSortedServers(dir.getServerList());
+        syphonClient.set(sortedServers[dirIdx]);
+    }
+
+//    dirIdx = std::min(appIndex, dir.size() - 1);
+//    if (dirIdx >= 0)
+//        syphonClient.set(dir.getDescription(dirIdx));
     
     resetGui();
 }
@@ -106,8 +125,10 @@ void ofApp::setSyphonServerByIndex(int idx) {
         dirIdx = idx;
         if(dirIdx > dir.size() - 1)
             dirIdx = 0;
-
-        syphonClient.set(dir.getDescription(dirIdx));
+        
+        vector<ofxSyphonServerDescription> sortedServers = getSortedServers(dir.getServerList());
+        syphonClient.set(sortedServers[dirIdx]);
+        
         string serverName = syphonClient.getServerName();
         string appName = syphonClient.getApplicationName();
 
@@ -147,6 +168,20 @@ void ofApp::draw(){
     
     
     syphonClient.draw(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+}
+
+vector<ofxSyphonServerDescription> ofApp::getSortedServers(vector<ofxSyphonServerDescription> servers) {
+    vector<ofxSyphonServerDescription> s;
+    for (int i = 0; i < servers.size(); i++) {
+        s.push_back(servers[i]);
+    }
+    
+    std::sort(s.begin(), s.end(), [ ]( const ofxSyphonServerDescription& a, const ofxSyphonServerDescription& b )
+    {
+       return a.serverName > b.serverName;
+    });
+    
+    return s;
 }
 
 //--------------------------------------------------------------

@@ -42,6 +42,8 @@ class ofApp : public ofBaseApp{
         vector<string> monitorDescriptions;
         void setMonitorByIndex(int index);
     
+        vector<ofxSyphonServerDescription> getSortedServers(vector<ofxSyphonServerDescription> servers);
+    
         void resetGui();
         ofxDatGui *gui;
         ofxDatGuiDropdown* syphonDropdown;
